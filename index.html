@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="{{ config.site.language | default('en') }}" class="scroll-smooth">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{{ title }} - {{ config.site.title }}</title>
+
+        <link rel="icon" type="{{ favicon_type }}" href="{{ favicon_url }}" />
+
+        <meta name="description" content="{{ page_description }}" />
+        <meta name="theme-name" content="monpyra-theme" />
+        <meta name="theme-author" content="PalembangPy" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="{{ page_url }}" />
+        <meta
+            property="og:title"
+            content="{{ title }} - {{ config.site.title }}"
+        />
+        <meta property="og:description" content="{{ page_description }}" />
+        <meta property="og:image" content="{{ og_image }}" />
+
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="{{ page_url }}" />
+        <meta
+            property="twitter:title"
+            content="{{ title }} - {{ config.site.title }}"
+        />
+        <meta property="twitter:description" content="{{ page_description }}" />
+        <meta property="twitter:image" content="{{ og_image }}" />
+
+        <link rel="canonical" href="{{ canonical_url }}" />
+
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+        />
+
+        <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+        <script>
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        colors: {
+                            songket: {
+                                600: "#dc2626",
+                                700: "#b91c1c",
+                                800: "#991b1b",
+                                900: "#7f1d1d",
+                                gold: "#fbbf24"
+                            }
+                        }
+                    }
+                }
+            };
+        </script>
+
+        <link rel="stylesheet" href="{{ base_url }}/monpyra/syntax.css" />
+        <link rel="stylesheet" href="{{ base_url }}/monpyra/index.css" />
+        <link rel="stylesheet" href="{{ base_url }}/monpyra/custom.css" />
+
+        <script defer src="{{ base_url }}/monpyra/index.js"></script>
+        <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+        <script
+            defer
+            src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"
+        ></script>
+        <script
+            defer
+            src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"
+        ></script>
+
+        <script type="application/ld+json">
+            {{ json_ld | safe }}
+        </script>
+
+        <style>
+            .toc-wrapper a.active-toc {
+                @apply text-red-700 dark:text-red-400 font-bold border-l-2 border-red-700 pl-2 transition-all duration-200;
+            }
+            [x-cloak] {
+                display: none !important;
+            }
+        </style>
+    </head>
+
+    <body
+        hx-target="#main-content"
+        hx-select="#main-content"
+        hx-swap="outerHTML"
+        x-data="{ 
+            mobileSidebarOpen: false, 
+            desktopSidebarOpen: false, 
+            modalOpen: false, 
+            searchModalOpen: false,
+            isDark: localStorage.getItem('dark') === 'true',
+            toggleTheme() {
+                this.isDark = !this.isDark;
+                localStorage.setItem('dark', this.isDark);
+                document.documentElement.classList.toggle('dark', this.isDark);
+            }
+        }"
+        x-init="document.documentElement.classList.toggle('dark', isDark)"
+        @keydown.window.prevent.ctrl.k="searchModalOpen = true; $nextTick(() => document.getElementById('docsearch-input').focus())"
+        @keydown.window.prevent.meta.k="searchModalOpen = true; $nextTick(() => document.getElementById('docsearch-input').focus())"
+        class="bg-white dark:bg-[#121212] text-gray-900 dark:text-gray-200 font-sans transition-colors duration-200 relative overflow-x-hidden"
+    >
+        <header
+            class="sticky top-0 z-50 w-full bg-red-900/95 dark:bg-[#2e0a0a]/95 backdrop-blur border-b border-red-800 dark:border-red-950 shadow-lg h-16 flex items-center justify-between px-4 md:px-8 overflow-hidden"
+        >
+            <div class="flex items-center">
+                <button
+                    @click="mobileSidebarOpen = !mobileSidebarOpen"
+                    class="md:hidden mr-4 text-white hover:text-yellow-400 p-1 rounded-md"
+                >
+                    <svg
+                        class="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"
+                        />
+                    </svg>
+                </button>
+
+                <button
+                    @click="desktopSidebarOpen = !desktopSidebarOpen"
+                    class="hidden md:block mr-4 text-red-200 hover:text-white p-1 rounded-md transition-colors"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 6h16M4 12h8m-8 6h16"
+                        />
+                    </svg>
+                </button>
+
+                <h1 class="text-xl font-bold text-white whitespace-nowrap">
+                    <a
+                        href="{{ base_url }}/"
+                        hx-get="{{ base_url }}/index.html"
+                        hx-push-url="{{ base_url }}/"
+                        class="hover:text-yellow-400 transition-colors"
+                        >{{ config.site.title }}</a
+                    >
+                </h1>
+            </div>
+
+            <div class="flex items-center justify-end flex-1 gap-3 md:gap-6">
+                <button
+                    @click="searchModalOpen = true; $nextTick(() => document.getElementById('docsearch-input').focus())"
+                    class="group flex items-center justify-between gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-black/20 hover:bg-black/30 border border-red-800/50 rounded-xl text-red-100 transition-all w-auto md:w-64"
+                >
+                    <div class="flex items-center gap-2">
+                        <i
+                            class="bx bx-search text-lg group-hover:text-yellow-400 transition-colors"
+                        ></i>
+                        <span class="hidden md:block text-sm font-medium"
+                            >Search docs...</span
+                        >
+                    </div>
+                    <div class="hidden md:flex items-center gap-1">
+                        <kbd
+                            class="font-sans text-[10px] font-bold px-1.5 py-0.5 rounded border border-red-700 bg-red-950 text-red-300"
+                            >Ctrl K</kbd
+                        >
+                    </div>
+                </button>
+
+                <div class="flex items-center gap-4">
+                    <button
+                        @click="toggleTheme()"
+                        class="text-red-100 hover:text-white transition-colors"
+                    >
+                        <svg
+                            x-show="isDark"
+                            class="w-5 h-5"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                        >
+                            <path
+                                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                            ></path>
+                        </svg>
+                        <svg
+                            x-show="!isDark"
+                            class="w-5 h-5"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                        >
+                            <path
+                                d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+                            ></path>
+                        </svg>
+                    </button>
+                    <a
+                        href="{{ repository_url }}"
+                        target="_blank"
+                        class="text-red-100 hover:text-white transition-colors"
+                        title="View Source"
+                    >
+                        <i class="bx {{ vcs_icon }} text-2xl"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="max-w-[90rem] mx-auto flex w-full relative">
+            <aside
+                class="fixed inset-y-0 left-0 z-40 w-64 pt-16 bg-white dark:bg-[#1b1b1d] border-r border-gray-200 dark:border-gray-800 transform transition-transform duration-300 ease-in-out md:sticky md:top-16 h-screen overflow-y-auto shrink-0"
+                :class="[mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full', desktopSidebarOpen ? 'md:translate-x-0' : 'md:-translate-x-full md:hidden']"
+            >
+                <nav
+                    x-data="{ 
+                        openGroups: {}, 
+                        currentPath: window.location.pathname, 
+                        isActive(navUrl) { 
+                            const a = document.createElement('a'); a.href = navUrl;
+                            const clean = (p) => p.replace(/\/$/, '').replace(/index\.html$/, '').replace(/\.html$/, '');
+                            return clean(a.pathname) === clean(this.currentPath);
+                        },
+                        initGroups() {
+                            {% for nav in navigation %}{% if nav.children %}{% for child in nav.children %}
+                            if (this.isActive('{{ base_url }}/{{ child.url }}')) { this.openGroups['{{ nav.title }}'] = true; }
+                            {% endfor %}{% endif %}{% endfor %}
+                        }
+                    }"
+                    x-init="initGroups()"
+                    @htmx:after-settle.window="currentPath = window.location.pathname; initGroups(); mobileSidebarOpen = false"
+                    @popstate.window="currentPath = window.location.pathname; initGroups(); mobileSidebarOpen = false"
+                    class="p-4"
+                >
+                    {% for nav in navigation %} {% if nav.children %}
+                    <div class="flex flex-col gap-1 mb-2">
+                        <button
+                            @click="openGroups['{{ nav.title }}'] = !openGroups['{{ nav.title }}']"
+                            class="flex items-center justify-between w-full px-3 py-2 rounded-lg font-bold transition-all duration-200"
+                            :class="openGroups['{{ nav.title }}'] ? 'text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/10' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'"
+                        >
+                            <div class="flex items-center gap-3">
+                                <i
+                                    class="{{ nav.icon }} text-lg w-6 text-center opacity-70"
+                                ></i>
+                                <span>{{ nav.title }}</span>
+                            </div>
+                            <i
+                                class="bx bx-chevron-down transition-transform duration-300"
+                                :class="openGroups['{{ nav.title }}'] ? 'rotate-180' : ''"
+                            ></i>
+                        </button>
+                        <div
+                            x-show="openGroups['{{ nav.title }}']"
+                            x-collapse
+                            x-cloak
+                            class="flex flex-col gap-1 ml-9 border-l border-gray-200 dark:border-gray-800"
+                        >
+                            {% for child in nav.children %}
+                            <a
+                                href="{{ base_url }}/{{ child.url }}"
+                                hx-get="{{ base_url }}/{{ child.file }}"
+                                hx-push-url="{{ base_url }}/{{ child.url }}"
+                                class="block px-3 py-1.5 text-sm font-medium rounded-md transition-colors"
+                                :class="isActive('{{ base_url }}/{{ child.url }}') ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400' : 'text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 hover:bg-gray-50 dark:hover:bg-gray-800/50'"
+                            >
+                                {{ child.title }}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <a
+                        href="{{ base_url }}/{{ nav.url }}"
+                        hx-get="{{ base_url }}/{{ nav.file }}"
+                        hx-push-url="{{ base_url }}/{{ nav.url }}"
+                        class="flex items-center gap-3 px-3 py-2 rounded-lg font-medium transition-all duration-200 mb-2"
+                        :class="isActive('{{ base_url }}/{{ nav.url }}') ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-red-600 dark:hover:text-red-400'"
+                    >
+                        <i
+                            class="{{ nav.icon }} text-lg w-6 text-center opacity-70"
+                        ></i>
+                        <span>{{ nav.title }}</span>
+                    </a>
+                    {% endif %} {% endfor %}
+                </nav>
+            </aside>
+
+            <div
+                x-show="mobileSidebarOpen"
+                x-transition.opacity
+                @click="mobileSidebarOpen = false"
+                class="fixed inset-0 bg-black/50 z-30 md:hidden"
+                style="display: none"
+            ></div>
+
+            <main
+                id="main-content"
+                class="flex-1 min-w-0 px-4 sm:px-8 md:px-12 py-8 pb-12 lg:flex gap-12 relative"
+                x-data="{ mobileTocOpen: false }"
+                x-effect="document.body.style.overflow = mobileTocOpen ? 'hidden' : ''"
+            >
+                <div class="flex-1 min-w-0">
+                    <div
+                        class="prose dark:prose-invert prose-red max-w-none lg:prose-lg custom-headings"
+                    >
+                        {{ content | safe }}
+                    </div>
+
+                    {% if prev_page or next_page %}
+                    <div
+                        class="mt-12 pt-6 border-t border-gray-200 dark:border-gray-800 flex flex-row justify-between items-stretch gap-3 sm:gap-4"
+                    >
+                        {% if prev_page %}
+                        <a
+                            href="{{ base_url }}/{{ prev_page.url }}"
+                            hx-get="{{ base_url }}/{{ prev_page.file }}"
+                            hx-push-url="{{ base_url }}/{{ prev_page.url }}"
+                            class="flex-1 min-w-0 flex flex-col items-start p-3 sm:p-4 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-red-500 dark:hover:border-red-500 hover:bg-red-50/50 dark:hover:bg-red-900/20 transition-all duration-200 group"
+                        >
+                            <span
+                                class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1"
+                                >Previous</span
+                            >
+                            <span
+                                class="text-red-600 dark:text-red-400 font-medium flex items-center gap-1 sm:gap-2 text-sm sm:text-base max-w-full"
+                            >
+                                <i
+                                    class="bx bx-left-arrow-alt text-lg sm:text-xl shrink-0 transition-transform group-hover:-translate-x-1"
+                                ></i>
+                                <span class="truncate"
+                                    >{{ prev_page.title }}</span
+                                >
+                            </span>
+                        </a>
+                        {% else %}
+                        <div class="flex-1 min-w-0"></div>
+                        {% endif %} {% if next_page %}
+                        <a
+                            href="{{ base_url }}/{{ next_page.url }}"
+                            hx-get="{{ base_url }}/{{ next_page.file }}"
+                            hx-push-url="{{ base_url }}/{{ next_page.url }}"
+                            class="flex-1 min-w-0 flex flex-col items-end p-3 sm:p-4 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-red-500 dark:hover:border-red-500 hover:bg-red-50/50 dark:hover:bg-red-900/20 transition-all duration-200 group text-right"
+                        >
+                            <span
+                                class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1"
+                                >Next</span
+                            >
+                            <span
+                                class="text-red-600 dark:text-red-400 font-medium flex items-center gap-1 sm:gap-2 justify-end text-sm sm:text-base max-w-full"
+                            >
+                                <span class="truncate"
+                                    >{{ next_page.title }}</span
+                                >
+                                <i
+                                    class="bx bx-right-arrow-alt text-lg sm:text-xl shrink-0 transition-transform group-hover:translate-x-1"
+                                ></i>
+                            </span>
+                        </a>
+                        {% else %}
+                        <div class="flex-1 min-w-0"></div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if toc %}
+                <button
+                    @click="mobileTocOpen = true"
+                    class="lg:hidden fixed bottom-6 right-6 z-40 bg-red-700 text-white w-14 h-14 flex items-center justify-center rounded-full shadow-lg hover:bg-red-800 transition-colors"
+                >
+                    <i class="bx bx-list-ul text-2xl"></i>
+                </button>
+
+                <div
+                    x-show="mobileTocOpen"
+                    style="display: none"
+                    class="fixed inset-0 z-50 lg:hidden"
+                >
+                    <div
+                        x-show="mobileTocOpen"
+                        x-transition.opacity
+                        @click="mobileTocOpen = false"
+                        class="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                    ></div>
+                    <div
+                        x-show="mobileTocOpen"
+                        x-transition:enter="transition ease-out duration-300 transform"
+                        x-transition:enter-start="translate-y-full"
+                        x-transition:enter-end="translate-y-0"
+                        x-transition:leave="transition ease-in duration-200 transform"
+                        x-transition:leave-start="translate-y-0"
+                        x-transition:leave-end="translate-y-full"
+                        class="absolute bottom-0 inset-x-0 bg-white dark:bg-[#1b1b1d] rounded-t-2xl shadow-2xl max-h-[80vh] flex flex-col"
+                    >
+                        <div
+                            class="p-4 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center"
+                        >
+                            <h4
+                                class="font-bold text-gray-900 dark:text-white uppercase tracking-wider text-xs border-l-4 border-red-700 pl-3"
+                            >
+                                Table of Contents
+                            </h4>
+                            <button
+                                @click="mobileTocOpen = false"
+                                class="text-gray-500 hover:text-gray-900 dark:hover:text-white"
+                            >
+                                <i class="bx bx-x text-2xl"></i>
+                            </button>
+                        </div>
+                        <div
+                            class="p-4 overflow-y-auto custom-scrollbar toc-wrapper text-sm text-gray-600 dark:text-gray-400"
+                            @click="mobileTocOpen = false"
+                        >
+                            {{ toc | safe }}
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="hidden lg:block w-64 shrink-0">
+                    <div
+                        class="sticky top-24 max-h-[calc(100vh-10rem)] overflow-y-auto pr-4 custom-scrollbar"
+                    >
+                        <h4
+                            class="font-bold text-gray-900 dark:text-white uppercase tracking-wider text-xs mb-4 border-l-4 border-red-700 pl-3"
+                        >
+                            Table of Contents
+                        </h4>
+                        <div
+                            class="toc-wrapper text-sm text-gray-600 dark:text-gray-400"
+                        >
+                            {{ toc | safe }}
+                        </div>
+                    </div>
+                </aside>
+                {% endif %}
+            </main>
+        </div>
+
+        <footer
+            class="w-full py-10 border-t border-gray-200 dark:border-gray-800 bg-gray-50/30 dark:bg-[#121212]"
+        >
+            <div
+                class="max-w-[90rem] mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-6"
+            >
+                {{ footer_credit | safe }}
+            </div>
+        </footer>
+
+        <div
+            x-show="searchModalOpen"
+            style="display: none"
+            class="fixed inset-0 z-[100]"
+            role="dialog"
+            aria-modal="true"
+            @keydown.escape.window="searchModalOpen = false"
+        >
+            <div
+                x-show="searchModalOpen"
+                x-transition.opacity
+                class="fixed inset-0 bg-black/50 backdrop-blur-sm"
+                @click="searchModalOpen = false"
+            ></div>
+            <div
+                x-show="searchModalOpen"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-95"
+                x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-100"
+                x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                class="fixed inset-x-4 top-16 md:inset-x-auto md:left-1/2 md:-translate-x-1/2 md:top-24 w-auto md:w-full md:max-w-2xl bg-white dark:bg-[#1b1b1d] rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 flex flex-col max-h-[80vh] overflow-hidden"
+                x-data="{
+                     searchQuery: '', searchIndex: [], results: [],
+                     initSearch() { fetch('{{ base_url }}/search_index.json').then(res => res.json()).then(data => { this.searchIndex = data; }); },
+                     performSearch() {
+                         if(this.searchQuery.trim() === '') { this.results = []; return; }
+                         const q = this.searchQuery.toLowerCase();
+                         this.results = this.searchIndex.filter(item => item.title.toLowerCase().includes(q) || item.content.toLowerCase().includes(q)).slice(0, 10);
+                     }
+                 }"
+                x-init="initSearch(); $watch('searchQuery', () => performSearch())"
+                @htmx:after-settle.window="searchModalOpen = false; searchQuery = ''; results = []"
+            >
+                <div
+                    class="flex items-center px-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-[#1b1b1d]"
+                >
+                    <i class="bx bx-search text-2xl text-red-600"></i>
+                    <input
+                        id="docsearch-input"
+                        type="text"
+                        x-model="searchQuery"
+                        placeholder="Search documentation..."
+                        class="flex-1 bg-transparent border-none py-4 px-4 text-gray-900 dark:text-gray-100 outline-none placeholder-gray-400 text-lg"
+                    />
+                </div>
+                <div
+                    class="overflow-y-auto p-4 custom-scrollbar flex-1 bg-gray-50/50 dark:bg-[#121212]"
+                >
+                    <div class="flex flex-col gap-2">
+                        <template x-for="res in results" :key="res.url">
+                            <a
+                                :href="'{{ base_url }}/' + res.url"
+                                :hx-get="'{{ base_url }}/' + res.file"
+                                :hx-push-url="'{{ base_url }}/' + res.url"
+                                class="flex flex-col p-4 rounded-xl bg-white dark:bg-[#1b1b1d] border border-gray-200 dark:border-gray-800 hover:border-red-500 hover:shadow-md transition-all group"
+                            >
+                                <span
+                                    class="text-[10px] font-bold uppercase tracking-wider text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 px-2 py-0.5 rounded w-fit mb-2"
+                                    x-text="res.category"
+                                ></span>
+                                <span
+                                    class="font-bold text-gray-900 dark:text-gray-100 mb-1 group-hover:text-red-700"
+                                    x-text="res.title"
+                                ></span>
+                            </a>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const observerOptions = {
+                    root: null,
+                    rootMargin: "0px 0px -80% 0px",
+                    threshold: 0
+                };
+                const observer = new IntersectionObserver(entries => {
+                    entries.forEach(entry => {
+                        const id = entry.target.getAttribute("id");
+                        if (id) {
+                            const tocLink = document.querySelector(
+                                `.toc-wrapper a[href*='#${id}']`
+                            );
+                            if (entry.isIntersecting) {
+                                document
+                                    .querySelectorAll(".toc-wrapper a")
+                                    .forEach(el =>
+                                        el.classList.remove("active-toc")
+                                    );
+                                if (tocLink)
+                                    tocLink.classList.add("active-toc");
+                            }
+                        }
+                    });
+                }, observerOptions);
+                document
+                    .querySelectorAll("h2[id], h3[id], h4[id]")
+                    .forEach(section => {
+                        observer.observe(section);
+                    });
+            });
+
+            document.body.addEventListener("htmx:afterSettle", () => {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                const observerOptions = {
+                    root: null,
+                    rootMargin: "0px 0px -80% 0px",
+                    threshold: 0
+                };
+                const observer = new IntersectionObserver(entries => {
+                    entries.forEach(entry => {
+                        const id = entry.target.getAttribute("id");
+                        if (id) {
+                            const tocLink = document.querySelector(
+                                `.toc-wrapper a[href*='#${id}']`
+                            );
+                            if (entry.isIntersecting) {
+                                document
+                                    .querySelectorAll(".toc-wrapper a")
+                                    .forEach(el =>
+                                        el.classList.remove("active-toc")
+                                    );
+                                if (tocLink)
+                                    tocLink.classList.add("active-toc");
+                            }
+                        }
+                    });
+                }, observerOptions);
+                document
+                    .querySelectorAll("h2[id], h3[id], h4[id]")
+                    .forEach(section => {
+                        observer.observe(section);
+                    });
+            });
+
+            // --- SATPAM 404 ---
+            document.body.addEventListener("htmx:beforeOnLoad", function (evt) {
+                if (evt.detail.xhr.status === 404) {
+                    window.location.href = "{{ site_url }}/404.html".replace(
+                        "//",
+                        "/"
+                    );
+                }
+            });
+
+            document.body.addEventListener(
+                "htmx:responseError",
+                function (evt) {
+                    if (evt.detail.xhr.status === 404) {
+                        window.location.href =
+                            "{{ base_url }}/404.html".replace("//", "/");
+                    }
+                }
+            );
+        </script>
+    </body>
+</html>

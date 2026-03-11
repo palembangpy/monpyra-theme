@@ -1,0 +1,317 @@
+.theme-preview-card {
+    @apply border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden transition-all hover:shadow-lg;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-700 rounded-full;
+}
+
+.search-expansion-circle {
+    transition:
+        transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.4s ease;
+    will-change: transform, opacity;
+}
+
+header .transition-all {
+    transition-duration: 500ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fa-heart.text-red-500 {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+}
+
+.toc-wrapper {
+    font-size: 0.875rem;
+}
+.toc-wrapper ul {
+    list-style-type: none !important;
+    padding-left: 0;
+    margin-top: 0.5rem;
+}
+.toc-wrapper ul ul {
+    padding-left: 1rem;
+    margin-top: 0.25rem;
+    border-left: 1px solid #e2e8f0;
+}
+.dark .toc-wrapper ul ul {
+    border-left-color: #334155;
+}
+.toc-wrapper li {
+    margin-top: 0.5rem;
+}
+.toc-wrapper a {
+    color: #64748b;
+    text-decoration: none;
+    transition: color 0.2s;
+    display: block;
+    padding-left: 0.5rem;
+}
+.toc-wrapper a:hover {
+    color: #2563eb;
+}
+.dark .toc-wrapper a {
+    color: #94a3b8;
+}
+.dark .toc-wrapper a:hover {
+    color: #60a5fa;
+}
+.toc-wrapper a {
+    @apply transition-all duration-200;
+}
+
+.code-container,
+.codehilite {
+    background-color: #282a36 !important;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    margin: 1rem 0 !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+    border: 1px solid #44475a;
+    display: flex;
+    flex-direction: column;
+}
+
+.code-header {
+    background-color: #1e1f29;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #44475a;
+}
+
+.window-controls {
+    display: flex;
+    gap: 0.375rem;
+}
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.dot-red {
+    background-color: #ff5f56;
+}
+.dot-yellow {
+    background-color: #ffbd2e;
+}
+.dot-green {
+    background-color: #27c93f;
+}
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.code-lang {
+    color: #6272a4;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.copy-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    background-color: transparent;
+    color: #6272a4;
+    border: 1px solid #6272a4;
+    border-radius: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.copy-btn:hover {
+    background-color: #6272a4;
+    color: white;
+}
+
+.prose pre {
+    background-color: transparent !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.prose .code-container pre,
+.prose .codehilite pre {
+    margin: 0 !important;
+    padding: 1.25rem !important;
+    background-color: transparent !important;
+    overflow-x: auto !important;
+}
+
+.code-container pre code,
+.codehilite pre code {
+    background: transparent !important;
+    white-space: pre !important;
+    font-family:
+        ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.875em;
+    line-height: 1.6;
+    color: #f8f8f2 !important;
+}
+
+.admonition {
+    margin: 1rem 0 !important;
+    padding: 1rem !important;
+    border-radius: 0.5rem;
+    border-left: 4px solid;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    background-color: #f8fafc;
+    color: #334155;
+}
+.admonition-title {
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+}
+.admonition p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+.admonition.note {
+    border-left-color: #3b82f6;
+}
+.admonition.note .admonition-title {
+    color: #2563eb;
+}
+.admonition.note .admonition-title::before {
+    content: "❕";
+    font-size: 1.1em;
+}
+.admonition.tip {
+    border-left-color: #14b8a6;
+}
+.admonition.tip .admonition-title {
+    color: #0d9488;
+}
+.admonition.tip .admonition-title::before {
+    content: "💡";
+    font-size: 1.1em;
+}
+.admonition.success {
+    border-left-color: #10b981;
+}
+.admonition.success .admonition-title {
+    color: #059669;
+}
+.admonition.success .admonition-title::before {
+    content: "✔";
+    font-size: 1.1em;
+}
+.admonition.warning {
+    border-left-color: #f59e0b;
+}
+.admonition.warning .admonition-title {
+    color: #d97706;
+}
+.admonition.warning .admonition-title::before {
+    content: "⚠";
+    font-size: 1.1em;
+}
+.admonition.danger {
+    border-left-color: #ef4444;
+}
+.admonition.danger .admonition-title {
+    color: #dc2626;
+}
+.admonition.danger .admonition-title::before {
+    content: "✖";
+    font-size: 1.1em;
+}
+.dark .admonition {
+    background-color: #1e293b;
+    color: #f3f4f6;
+}
+
+.prose {
+    max-width: none !important;
+}
+.prose h1 {
+    margin-top: 1.5rem !important;
+    margin-bottom: 0.75rem !important;
+    line-height: 1.2;
+    font-weight: 800;
+    scroll-margin-top: 5rem;
+}
+.prose h2 {
+    margin-top: 1.25rem !important;
+    margin-bottom: 0.5rem !important;
+    line-height: 1.3;
+    font-weight: 700;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 0.25rem;
+    scroll-margin-top: 5rem;
+}
+.dark .prose h2 {
+    border-bottom-color: #334155;
+}
+.prose h3 {
+    margin-top: 1rem !important;
+    margin-bottom: 0.4rem !important;
+    font-weight: 600;
+}
+.prose p {
+    margin-top: 0.6rem !important;
+    margin-bottom: 0.6rem !important;
+    line-height: 1.6;
+}
+.prose ul,
+.prose ol {
+    margin-top: 0.4rem !important;
+    margin-bottom: 0.4rem !important;
+}
+.prose li {
+    margin-top: 0.2rem !important;
+    margin-bottom: 0.2rem !important;
+}
+.prose img {
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+    border-radius: 0.5rem;
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+.prose code::before,
+.prose code::after {
+    content: "" !important;
+}
+
+.prose code {
+    font-variant-ligatures: none;
+    word-break: break-word;
+}
