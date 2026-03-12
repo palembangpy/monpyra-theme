@@ -454,14 +454,15 @@
             </main>
         </div>
 
-        <footer class="w-full py-10 border-t border-gray-200 dark:border-gray-800 bg-gray-50/30 dark:bg-[#121212]">
-    <div class="max-w-[90rem] mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-6">
-        {{ footer_credit | safe }}
-        
-        {# Hidden marker to satisfy Engine branding validation #}
-        <span style="display:none" aria-hidden="true">Powered by Monpyra PalembangPy</span>
-    </div>
-</footer>
+        <footer
+            class="w-full py-10 border-t border-gray-200 dark:border-gray-800 bg-gray-50/30 dark:bg-[#121212]"
+        >
+            <div
+                class="max-w-[90rem] mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-6"
+            >
+                {{ footer_credit | safe }}
+            </div>
+        </footer>
 
         <div
             x-show="searchModalOpen"

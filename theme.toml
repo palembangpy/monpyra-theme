@@ -1,0 +1,11 @@
+[theme]
+name = "monpyra-theme"
+display_name = "PalembangPy Community"
+version = "1.0.0"
+author = "palembangpy"
+repository = "https://github.com/palembangpy/monpyra-theme"
+description = "The official starter template for Monpyra themes. Built with Jinja2, HTMX, AlphineJS and TailwindCSS for high-performance documentation sites."
+type = "official"
+
+[integrity]
+theme_key = "MONPYRA-SECURE-TOKEN"
